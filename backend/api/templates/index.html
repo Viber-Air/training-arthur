@@ -1,0 +1,33 @@
+<html>
+<head>
+	<title>API</title>
+</head>
+<body>
+	<h1>API Examples</h1>
+	<h2>/api/[Model/Collection]/?filters</h2>
+
+
+	<p>Todos os valores:</p>
+
+http://localhost:8000/api/acceleration/
+
+Somente com 𝑖𝑑>120
+
+http://localhost:8000/api/acceleration/?id__gt=120&acc__lt=1.0
+
+Com 𝑖𝑑>120
+e 𝑎𝑐𝑐<1.0
+
+http://localhost:8000/api/acceleration/?id__gt=120&acc__lt=1.0
+
+Range de 𝑎𝑐𝑐=2
+a 𝑎𝑐𝑐=3
+
+http://localhost:8000/api/acceleration/?acc__range=(2,3)
+	<a></a>
+	<a></a>
+	<a></a>
+	<a></a>
+</body>
+</html>
+
