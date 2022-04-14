@@ -1,8 +1,8 @@
 FROM python:alpine
 
 COPY requirements.txt ./
-COPY backend backend
+COPY api api
 
 RUN  pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT sh ./backend/run.sh
+ENTRYPOINT sh ./api/run.sh
