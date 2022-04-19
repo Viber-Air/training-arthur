@@ -1,33 +1,41 @@
-<html>
+<!DOCTYPE html>
 <head>
-	<title>API</title>
+	<title>API Examples</title>
 </head>
 <body>
-	<h1>API Examples</h1>
-	<h2>/api/[Model/Collection]/?filters</h2>
-
-
-	<p>Todos os valores:</p>
-
-http://localhost:8000/api/acceleration/
-
-Somente com 𝑖𝑑>120
-
-http://localhost:8000/api/acceleration/?id__gt=120&acc__lt=1.0
-
-Com 𝑖𝑑>120
-e 𝑎𝑐𝑐<1.0
-
-http://localhost:8000/api/acceleration/?id__gt=120&acc__lt=1.0
-
-Range de 𝑎𝑐𝑐=2
-a 𝑎𝑐𝑐=3
-
-http://localhost:8000/api/acceleration/?acc__range=(2,3)
-	<a></a>
-	<a></a>
-	<a></a>
-	<a></a>
+<h1>API</h1>
+<p>A api utiliza o m&eacute;todo QuerySet.filter() do Django. Assim, a maior parte das palavras-chave s&atilde;o compat&iacute;veis. Para mais informa&ccedil;&otilde;es: <a href="https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1">https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1</a></p>
+<p>Paravras-chave &uacute;teis:</p>
+<ul>
+<li>gt - greater than</li>
+<li>gte - greater than or equal to</li>
+<li>lt - less than</li>
+<li>lte - less than or equal to</li>
+<li>range(&nbsp;&nbsp; ,&nbsp;&nbsp; ) - range test (inclusive)</li>
+</ul>
+<h1>Exemplos</h1>
+<h2>/api/[Model/Collection]/?filters</h2>
+<p>* para o exemplo usaremos model=rawdata</p>
+<ul>
+<li>Mostrando todos os valores:</li>
+</ul>
+<p><a href="http://localhost:8000/api/rawdata">http://localhost:8000/api/rawdata</a></p>
+<ul>
+<li>Somente dados do sensor com sensor_id=1:</li>
+</ul>
+<p><a href="http://localhost:8000/api/rawdata/?sensor_id=1">http://localhost:8000/api/rawdata/?sensor_id=1</a></p>
+<ul>
+<li>Somente apartir do dia 01/04/22:</li>
+</ul>
+<p><a href="http://localhost:8000/api/rawdata/?initial_time__gt=2022-04-01">http://localhost:8000/api/rawdata/?initial_time__gt=2022-04-01</a></p>
+<ul>
+<li>Somente apartir do dia 01/04/22 &agrave;s 12h30m00s:</li>
+</ul>
+<p><a href="http://localhost:8000/api/rawdata/?initial_time__gt=2022-04-01T12:30:00">http://localhost:8000/api/rawdata/?initial_time__gt=2022-04-01T12:30:00</a></p>
+<ul>
+<li>Somente entre os dias 01/04/22 e 01/05/22:</li>
+</ul>
+<p><a href="http://localhost:8000/api/rawdata/?initial_time__range=(2022-04-01,2022-05-01)">http://localhost:8000/api/rawdata/?initial_time__range=(2022-04-01,2022-05-01)</a></p>
 </body>
 </html>
 
