@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, Http404
-from .models import RawData
+from .models import RawData, Sensor
 from bson.objectid import ObjectId
 from datetime import datetime
 import json
 import re
 
-models = {'rawdata':RawData}
+models = {
+        'rawdata':RawData,
+        'sensor':Sensor
+        }
 
 def index(request):
     return render(request, 'index.html')
