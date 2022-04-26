@@ -1,72 +1,70 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, Http404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import RawData, Sensor
-from bson.objectid import ObjectId
-from datetime import datetime
-import json
+from .serializers import RawDataSerializer, SensorSerializer
 import re
 
-models = {
-        'rawdata':RawData,
-        'sensor':Sensor
+MODELS = {
+        'rawdata': RawData,
+        'sensor' : Sensor,
         }
+
+SERIALIZERS = {
+        'rawdata': RawDataSerializer,
+        'sensor' : SensorSerializer
+        }
+
 
 def index(request):
     return render(request, 'index.html')
 
-def api(request, **kwargs):
+
+@api_view(['GET', 'PUT', 'POST', 'DELETE'])
+def api(request, collection):
+    Model = MODELS[collection.lower()]
+    Serializer = SERIALIZERS[collection.lower()]
+    filters = parse_filters(request, Model)
+
     if request.method == 'GET':
-        return api_get(request, kwargs)
+        query = Model.objects.filter(**filters)
+        resp = Serializer(query, many=True)
+
     elif request.method == 'POST':
-        return api_post(request, kwargs)
-    raise Http404(f'Method {request.method} not implemented!')
-    
+        resp = Serializer(data=request.data, many=True)
+        # Corrigir o '_id' para ObjectId aqui! <<<<<<<< ToDo
+        if resp.is_valid():
+            resp.save()
 
-def api_get(request, kwargs):
-    #Lembrete: collection(MongoDB) = model(Django)
-    model = models[kwargs['collection'].lower()] 
-    filters = parse_filters(request)
+    elif request.method == 'PUT':
+        raise NotImplementedError # Para implementar <<<<<<<< ToDo
 
-    resp = {}
-    for item in model.objects.filter(**filters):
-        d = item.to_dict()
-        resp[d['_id']] = d
+    elif request.method == 'DELETE':
+        # CUIDADO: TODOS OS MATCHES SERÃO APAGADOS!
+        if len(filters)>0:
+            query = Model.objects.filter(**filters)
+            for item in query:
+                item.delete()
+        query = Model.objects.filter(**filters)
+        resp = Serializer(query, many=True)
 
-    return JsonResponse(resp)
-
-
-def api_post(request, kwargs):
-    model = models[kwargs['collection'].lower()]
-    data = json.loads(request.body)
-    filters = parse_filters(request)
-
-    #Caso seja enviado um filtro e exista algum valor correspondente,
-    #os documentos são atualizados
-    query = model.objects.filter(**filters)
-    if query.exists() and bool(filters):
-        query.update(**data)
-    else:
-        new_entry = model(**data)
-        new_entry.save()
-
-    # Retorna uma query com os mesmos parametros para conferência
-    return api_get(request, kwargs)
+    return Response(resp.data)
 
 
-def parse_filters(request):
+def parse_filters(request, Model):
     filters = {}
-    for key, value in request.GET.items():
+    for key, value in request.GET.items():  
         # Tratando ranges
         if re.match( r'^\((.+,)+.+\)$', value):
             value_list = value[1:-1].split(',')
-            filters[key] = [correct_datatypes(key, v) for v in value_list]
+            filters[key] = value_list
         else:
-            filters[key] = correct_datatypes(key, value)
+            filters[key] = value
+
+    keys = list(filters.keys())
+    for key in keys:
+        if key not in Model.__dict__:
+            filters.pop(key)
+
     return filters
 
-
-def correct_datatypes(key, value):
-    # ObjectIdField
-    if key == '_id':
-        return ObjectId(value)
-    return value
