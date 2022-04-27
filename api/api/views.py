@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import RawData, Sensor
 from .serializers import RawDataSerializer, SensorSerializer
+from bson import ObjectId
 import re
 
 MODELS = {
@@ -25,19 +26,26 @@ def api(request, collection):
     Model = MODELS[collection.lower()]
     Serializer = SERIALIZERS[collection.lower()]
     filters = parse_filters(request, Model)
+    data = parse_data(request)
 
     if request.method == 'GET':
         query = Model.objects.filter(**filters)
         resp = Serializer(query, many=True)
 
     elif request.method == 'POST':
-        resp = Serializer(data=request.data, many=True)
-        # Corrigir o '_id' para ObjectId aqui! <<<<<<<< ToDo
+        resp = Serializer(data=data, many=True)
         if resp.is_valid():
             resp.save()
+        else:
+            return Response(status=400)
 
     elif request.method == 'PUT':
-        raise NotImplementedError # Para implementar <<<<<<<< ToDo
+        query = Model.objects.get(pk = ObjectId(data[0]['_id']))
+        resp = Serializer(query, data=data[0])
+        if resp.is_valid():
+            resp.save()
+        else:
+            return Response(status=400)
 
     elif request.method == 'DELETE':
         # CUIDADO: TODOS OS MATCHES SERÃO APAGADOS!
@@ -68,3 +76,7 @@ def parse_filters(request, Model):
 
     return filters
 
+def parse_data(request):
+    if type(request.data) is dict:
+        return [request.data]
+    return request.data
