@@ -25,11 +25,11 @@ def index(request):
 def api(request, collection):
     Model = MODELS[collection.lower()]
     Serializer = SERIALIZERS[collection.lower()]
-    filters = parse_filters(request, Model)
+    filters,order_by = parse_params(request, Model)
     data = parse_data(request)
 
     if request.method == 'GET':
-        query = Model.objects.filter(**filters)
+        query = Model.objects.filter(**filters).order_by(*order_by)
         resp = Serializer(query, many=True)
 
     elif request.method == 'POST':
@@ -59,22 +59,32 @@ def api(request, collection):
     return Response(resp.data)
 
 
-def parse_filters(request, Model):
+def parse_params(request, Model):
+    params = {}
     filters = {}
+    order_by = []
+
+    #Tratando os valores recebidos
     for key, value in request.GET.items():  
-        # Tratando ranges
         if re.match( r'^\((.+,)+.+\)$', value):
             value_list = value[1:-1].split(',')
-            filters[key] = value_list
+            params[key] = value_list
         else:
-            filters[key] = value
+            params[key] = value
 
-    keys = list(filters.keys())
+    #Separando os campos (filters,order_by,etc...)
+    keys = list(params.keys())
     for key in keys:
-        if key not in Model.__dict__:
-            filters.pop(key)
+        if key in Model.__dict__:
+            filters[key] = params[key]
 
-    return filters
+        elif key == 'order_by':
+            if type(params[key]) is list:
+                order_by = params[key]
+            else:
+                order_by = [params[key]]
+
+    return filters,order_by
 
 def parse_data(request):
     if type(request.data) is dict:
