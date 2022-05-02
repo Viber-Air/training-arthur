@@ -2,17 +2,17 @@
 Using Linux or WSL:
 
 ## Running
-'''bash
+```bash
 git clone git@github.com:alom101/WP-API.git
 cd WP-API
 sudo docker-compose up --build -d
-'''
+```
 
 ## Adding a super user
-'''bash
+```bash
 sudo docker exec -it api sh
 python api/manage.py createsuperuser
-'''
+```
 
 
 # Usage:
@@ -30,9 +30,9 @@ __POST and PUT requests don't accept any filter or order, DELETE accepts filters
 
 
 ## URL format:
-'''
+```
 http://IP:PORT/api/COLLECTION/?[FILTERS & ORDER_BY]
-'''
+```
 Where everything after "?" is optional
 
 For the examples we'll use the rawdata collection. So the base url will look like: http://localhost:8000/
@@ -64,7 +64,7 @@ All requests above can be mixed:
 ## Examples with Python Requests
 
 ### POST new sensor
-'''python
+```python
 import requests
 import json
 
@@ -84,10 +84,10 @@ headers = {
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-'''
+```
 
 ### POST new rawdata 
-'''python
+```python
 import requests
 import json
 
@@ -120,10 +120,10 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 
-'''
+```
 
 ### POST multiple new sensors
-'''python
+```python
 import requests
 import json
 
@@ -152,11 +152,11 @@ headers = {
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-'''
+```
 
 
 ### GET all sensors
-'''python
+```python
 import requests
 
 url = "http://localhost:8000/api/sensor/"
@@ -164,11 +164,11 @@ url = "http://localhost:8000/api/sensor/"
 response = requests.get(url)
 
 print(response.text)
-'''
+```
 
 
 ### GET all rawdata
-'''python
+```python
 import requests
 
 url = "http://localhost:8000/api/rawdata/"
@@ -176,4 +176,4 @@ url = "http://localhost:8000/api/rawdata/"
 response = requests.get(url)
 
 print(response.text)
-'''
+```
