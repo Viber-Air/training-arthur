@@ -20,6 +20,8 @@ python api/manage.py createsuperuser
 ## TLDR
 The api is based on a call to Django's QuerySet.filter() then QuerySet.order_by(). Every keyword comes from there, i.e.:
 
+Keyword | Description
+--- | ---
 gt | greater than
 gte | greater than or equal to
 lt | less than
@@ -39,6 +41,7 @@ For the examples we'll use the rawdata collection. So the base url will look lik
 
 ### Filtering
 Getting | URL
+--- | ---
 All data | /api/rawdata
 All data from sensor S1 | /api/rawdata/?sensor_id=S1
 All data from 01/04/22 | /api/rawdata/?initial_time__gt=2022-04-01
@@ -48,6 +51,7 @@ All data from 01/04/22 to 01/05/22 | /api/rawdata/?initial_time__range=(2022-04-
 
 ### Ordering
 Ordering by | URL
+--- | ---
 sensor_id | /api/rawdata/?order_by=sensor_id
 sensor_id then initial_time | /api/rawdata/?order_by=(sensor_id,initial_time)
 
