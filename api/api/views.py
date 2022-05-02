@@ -65,7 +65,7 @@ def parse_params(request, Model):
     order_by = []
 
     #Tratando os valores recebidos
-    for key, value in request.GET.items():  
+    for key, value in request.query_params.items():  
         if re.match( r'^\((.+,)+.+\)$', value):
             value_list = value[1:-1].split(',')
             params[key] = value_list
@@ -75,7 +75,9 @@ def parse_params(request, Model):
     #Separando os campos (filters,order_by,etc...)
     keys = list(params.keys())
     for key in keys:
-        if key in Model.__dict__:
+        if key in Model.__dict__:   # ERRO AQUI <<<<<<<<<<<<<<<<<<
+                                    # quando existe algum filtro,
+                                    # key não é igual ao nome do atributo            
             filters[key] = params[key]
 
         elif key == 'order_by':

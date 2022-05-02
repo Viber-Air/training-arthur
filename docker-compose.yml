@@ -13,6 +13,7 @@ services:
                 image: mongo:latest
                 container_name: mongo
                 volumes:
-                        - /home/arthur/WP/database:/data/db
+                        - /var/WP/WP-API_DB:/data/db
+                        - /var/WP/WP-API_config:/data/configdb
                 ports:
                         - "27017:27017"
