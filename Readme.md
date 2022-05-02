@@ -31,7 +31,7 @@ range(   ,   ) | range test (inclusive)
 __POST and PUT requests don't accept any filter or order, DELETE accepts filters and GET accepts filters and order__
 
 
-## URL format:
+## URL format
 ```
 http://IP:PORT/api/COLLECTION/?[FILTERS & ORDER_BY]
 ```
@@ -58,12 +58,16 @@ sensor_id then initial_time | /api/rawdata/?order_by=(sensor_id,initial_time)
 ### More complex queries
 All requests above can be mixed:
 
-> Getting only data from sensor S1 and from 01/04/22:
-> /api/rawdata/?sensor_id=S1&initial_time__gt=2022-04-01
 
-> Getting only data from sensor S1 and ordering by initial_time:
-> /api/rawdata/?sensor_id=S1&order_by=initial_time
+Getting only data from sensor S1 and from 01/04/22:
+```
+/api/rawdata/?sensor_id=S1&initial_time__gt=2022-04-01
+```
 
+Getting only data from sensor S1 and ordering by initial_time:
+```
+/api/rawdata/?sensor_id=S1&order_by=initial_time
+```
 
 ## Examples with Python Requests
 
