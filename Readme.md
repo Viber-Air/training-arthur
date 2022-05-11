@@ -3,7 +3,7 @@ Using Linux or WSL:
 
 ## Running
 ```bash
-git clone git@github.com:alom101/WP-API.git
+git clone git@github.com:Viber-Air/training-arthur.git  
 cd WP-API
 sudo docker-compose up --build -d
 ```
